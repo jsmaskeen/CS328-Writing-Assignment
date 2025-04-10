@@ -27,7 +27,7 @@ plotly_script_tag = Tag(
     builder=soup.builder,
     name="script",
     attrs={
-        "src": "https://cdn.plot.ly/plotly-latest.min.js"
+        "src": "https://cdn.plot.ly/plotly-3.0.1.min.js"
     },
 )
 soup.head.append(plotly_script_tag)
