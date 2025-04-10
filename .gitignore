@@ -1,6 +1,5 @@
 ### My gitignores ###
 _html/*.html
-_notebooks/data/wid_all_data.tar.gz
 
 
 # Templates taken from: https://github.com/github/gitignore
