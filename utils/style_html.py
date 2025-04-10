@@ -23,6 +23,14 @@ bootstrap_btn_link_tag = Tag(
     },
 )
 soup.head.append(bootstrap_btn_link_tag)
+plotly_script_tag = Tag(
+    builder=soup.builder,
+    name="script",
+    attrs={
+        "src": "https://cdn.plot.ly/plotly-latest.min.js"
+    },
+)
+soup.head.append(plotly_script_tag)
 
 # Insert jQuery
 jquery_script_tag = Tag(
