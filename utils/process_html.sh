@@ -1,5 +1,3 @@
-#!/bin/bash
-# Author: Sachin Yadav
 for filepath in ./notebooks/*.ipynb; do
     # echo $filepath
     filename=$(basename ${filepath})

@@ -11,7 +11,7 @@ data = re.sub("Out\[\d+\]:", "", data)
 soup = BeautifulSoup(data, features="lxml")
 
 # Change title
-soup.title.string = "CS328 Income Inequality"
+soup.title.string = "CS328 Campus Energy Consumption"
 
 # Insert Bootstrap CSS in head
 bootstrap_btn_link_tag = Tag(
