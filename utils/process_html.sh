@@ -1,4 +1,4 @@
-for filepath in ./notebooks/*.ipynb; do
+for filepath in ./notebooks/index.ipynb; do
     # echo $filepath
     filename=$(basename ${filepath})
     # echo $filename
