@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CS328 Income Inequality
+   CS328 Campus Energy Consumption
   </title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js">
   </script>
@@ -14588,7 +14588,7 @@ all of MD as it is not optimized for dense, information rich UIs.
    <div class="jp-Cell-inputWrapper">
     <div class="jp-InputArea jp-Cell-inputArea">
      <div class="jp-InputPrompt jp-InputArea-prompt">
-      In [1]:
+      In [54]:
      </div>
      <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
       <div class="CodeMirror cm-s-jupyter">
@@ -14623,7 +14623,7 @@ all of MD as it is not optimized for dense, information rich UIs.
    <div class="jp-Cell-inputWrapper">
     <div class="jp-InputArea jp-Cell-inputArea">
      <div class="jp-InputPrompt jp-InputArea-prompt">
-      In [2]:
+      In [1]:
      </div>
      <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
       <div class="CodeMirror cm-s-jupyter">
@@ -14632,6 +14632,7 @@ all of MD as it is not optimized for dense, information rich UIs.
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
@@ -14639,6 +14640,1384 @@ all of MD as it is not optimized for dense, information rich UIs.
 <span class="kn">from</span><span class="w"> </span><span class="nn">raceplotly.plots</span><span class="w"> </span><span class="kn">import</span> <span class="n">barplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">statsmodels.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <h3 id="Loading-the-data-and-cleanup">
+     Loading the data and cleanup
+     <a class="anchor-link" href="#Loading-the-data-and-cleanup">
+      ¶
+     </a>
+    </h3>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [41]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">consumption_full</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/consumption.csv"</span><span class="p">)</span>
+<span class="n">q1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/q1.csv"</span><span class="p">)</span>
+<span class="n">q2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/q2.csv"</span><span class="p">)</span>
+<span class="n">q3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/q3.csv"</span><span class="p">)</span>
+<span class="n">q4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/q4.csv"</span><span class="p">)</span>
+<span class="n">chiller_q1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/chiller_q1.csv"</span><span class="p">)</span>
+<span class="n">chiller_q2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/chiller_q2.csv"</span><span class="p">)</span>
+<span class="n">chiller_q3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/chiller_q3.csv"</span><span class="p">)</span>
+<span class="n">chiller_q4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/chiller_q4.csv"</span><span class="p">)</span>
+<span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/weather.csv"</span><span class="p">)</span>
+<span class="n">weather22</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/weather22.csv"</span><span class="p">)</span>
+<span class="n">longer_supply</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/supply.csv"</span><span class="p">)</span>
+<span class="n">overall</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">longer_supply</span><span class="p">,</span><span class="n">consumption_full</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">loss22</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/loss22.csv"</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [42]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">q5</span> <span class="o">=</span> <span class="n">overall</span><span class="p">[</span><span class="n">overall</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">q6</span> <span class="o">=</span> <span class="n">overall</span><span class="p">[</span><span class="n">overall</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">q7</span> <span class="o">=</span> <span class="n">overall</span><span class="p">[</span><span class="n">overall</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
+<span class="n">q8</span> <span class="o">=</span> <span class="n">overall</span><span class="p">[</span><span class="n">overall</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span>
+<span class="n">quarter_ls</span> <span class="o">=</span> <span class="p">[</span><span class="n">q1</span><span class="p">,</span><span class="n">q2</span><span class="p">,</span><span class="n">q3</span><span class="p">,</span><span class="n">q4</span><span class="p">]</span>
+<span class="n">quarter_ls22</span> <span class="o">=</span> <span class="p">[</span><span class="n">q5</span><span class="p">,</span><span class="n">q6</span><span class="p">,</span><span class="n">q7</span><span class="p">,</span><span class="n">q8</span><span class="p">]</span>
+<span class="n">consumption_df</span> <span class="o">=</span>  <span class="n">consumption_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">supply_df</span> <span class="o">=</span>  <span class="n">longer_supply</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">weather21_df</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'Metric'</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">'index'</span><span class="p">:</span> <span class="s1">'Month'</span><span class="p">})</span>
+<span class="n">weather22_df</span> <span class="o">=</span> <span class="n">weather22</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'Metric'</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">'index'</span><span class="p">:</span> <span class="s1">'Month'</span><span class="p">})</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [43]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">humidity</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span><span class="n">weather</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"Humidity"</span><span class="p">]</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weather</span><span class="p">[</span><span class="n">weather</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"Avg Temp"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">sunny_day_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weather</span><span class="p">[</span><span class="n">weather</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"avg sun hours"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">humidity22</span> <span class="o">=</span> <span class="n">weather22</span><span class="p">[</span><span class="n">weather22</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"Humidity"</span><span class="p">]</span>
+<span class="n">temp22</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weather22</span><span class="p">[</span><span class="n">weather22</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"Avg Temp"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">sunny_day_data22</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weather22</span><span class="p">[</span><span class="n">weather22</span><span class="p">[</span><span class="s1">'Metric'</span><span class="p">]</span><span class="o">==</span><span class="s2">"avg sun hours"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [44]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">solar_21</span> <span class="o">=</span> <span class="n">longer_supply</span><span class="p">[</span><span class="n">longer_supply</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span><span class="o">==</span><span class="mi">21</span><span class="p">][</span><span class="s1">'Solar Power'</span><span class="p">]</span>
+<span class="n">solar_22</span> <span class="o">=</span> <span class="n">longer_supply</span><span class="p">[</span><span class="n">longer_supply</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span><span class="o">==</span><span class="mi">22</span><span class="p">][</span><span class="s1">'Solar Power'</span><span class="p">]</span>
+<span class="n">temp21</span> <span class="o">=</span> <span class="n">temp</span>
+<span class="n">temp22</span> <span class="o">=</span> <span class="n">temp22</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [48]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">consumption_df</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">'01-'</span> <span class="o">+</span> <span class="n">consumption_df</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%d</span><span class="s1">-%b.%y'</span><span class="p">)</span>
+<span class="n">supply_df</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">'01-'</span> <span class="o">+</span> <span class="n">supply_df</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">+</span> <span class="n">supply_df</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%d</span><span class="s1">-%b-%y'</span><span class="p">)</span>
+
+
+<span class="n">months_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'January'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'February'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'March'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'April'</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> 
+               <span class="s1">'May'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">'June'</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">'July'</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">'August'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+               <span class="s1">'September'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">'October'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'November'</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">'December'</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+<span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Month_Num'</span><span class="p">]</span> <span class="o">=</span> <span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">months_dict</span><span class="p">)</span>
+<span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Month_Num'</span><span class="p">]</span> <span class="o">=</span> <span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">months_dict</span><span class="p">)</span>
+
+<span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2021</span>
+<span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2022</span>
+<span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">+</span> 
+                                     <span class="n">weather21_df</span><span class="p">[</span><span class="s1">'Month_Num'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'-01'</span><span class="p">)</span>
+<span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">+</span> 
+                                     <span class="n">weather22_df</span><span class="p">[</span><span class="s1">'Month_Num'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'-01'</span><span class="p">)</span>
+
+<span class="n">weather_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">weather21_df</span><span class="p">,</span> <span class="n">weather22_df</span><span class="p">])</span>
+<span class="n">merged_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">consumption_df</span><span class="p">,</span> <span class="n">supply_df</span><span class="p">[[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Torrent Power'</span><span class="p">,</span> <span class="s1">'Solar Power'</span><span class="p">,</span> <span class="s1">'Total'</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">'Date'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">)</span>
+<span class="n">merged_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="n">weather_df</span><span class="p">[[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Avg Temp'</span><span class="p">,</span> <span class="s1">'Precipitation'</span><span class="p">,</span> <span class="s1">'Humidity'</span><span class="p">,</span> <span class="s1">'Rainy days'</span><span class="p">,</span> <span class="s1">'avg sun hours'</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">'Date'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">)</span>
+
+<span class="n">merged_df</span><span class="p">[</span><span class="s1">'Solar Percentage'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">merged_df</span><span class="p">[</span><span class="s1">'Solar Power'</span><span class="p">]</span> <span class="o">/</span> <span class="n">merged_df</span><span class="p">[</span><span class="s1">'Total_x'</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="c1"># merged_df.to_clipboard()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <h3 id="Exploratory-Data-Analysis">
+     Exploratory Data Analysis
+     <a class="anchor-link" href="#Exploratory-Data-Analysis">
+      ¶
+     </a>
+    </h3>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [ ]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">facilities</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Hostels &amp; Guest house'</span><span class="p">,</span> <span class="s1">'Academic Area'</span><span class="p">,</span> <span class="s1">'Chiller Plant'</span><span class="p">,</span> <span class="s1">'Street light'</span><span class="p">,</span> 
+              <span class="s1">'WTP STP WSC SPS CWPS'</span><span class="p">,</span> <span class="s1">'Research park'</span><span class="p">,</span> <span class="s1">'Sports Complex'</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">facility</span> <span class="ow">in</span> <span class="n">facilities</span><span class="p">:</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">merged_df</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">merged_df</span><span class="p">[</span><span class="n">facility</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">facility</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'Monthly Electricity Consumption by Facility'</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">'Consumption (kWh)'</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">'Facility'</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">600</span>
+<span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <h3 id="Primary-Hypothesis">
+     Primary Hypothesis
+     <a class="anchor-link" href="#Primary-Hypothesis">
+      ¶
+     </a>
+    </h3>
+    <p>
+     <strong>
+      IIT Gandhinagar's campus uses the highest supply of energy from Torrent
+Power in August-October, and solar power is the best cure to address this
+surge.
+     </strong>
+    </p>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [6]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Month'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Jan'</span><span class="p">,</span> <span class="s1">'Feb'</span><span class="p">,</span> <span class="s1">'Mar'</span><span class="p">,</span> <span class="s1">'Apr'</span><span class="p">,</span> <span class="s1">'May'</span><span class="p">,</span> <span class="s1">'Jun'</span><span class="p">,</span> 
+              <span class="s1">'Jul'</span><span class="p">,</span> <span class="s1">'Aug'</span><span class="p">,</span> <span class="s1">'Sep'</span><span class="p">,</span> <span class="s1">'Oct'</span><span class="p">,</span> <span class="s1">'Nov'</span><span class="p">,</span> <span class="s1">'Dec'</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">'Year'</span><span class="p">:</span> <span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="s1">'Torrent Power'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">longer_supply</span><span class="p">[</span><span class="s1">'Torrent Power'</span><span class="p">])</span>
+<span class="p">}</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">'Torrent Power'</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">'Year'</span><span class="p">,</span>  
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Torrent Power Consumption Across Months (2021 vs. 2022)"</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">'Torrent Power'</span><span class="p">:</span> <span class="s1">'Energy Consumption (kWh)'</span><span class="p">,</span> <span class="s1">'Month'</span><span class="p">:</span> <span class="s1">'Month'</span><span class="p">},</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">500</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">"Month"</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">"Energy Consumption (kWh)"</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s2">"Year"</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">"plotly_white"</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [7]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">solar_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'Solar Power'</span><span class="p">][:</span><span class="mi">3</span><span class="p">]),</span><span class="n">quarter_ls</span><span class="o">+</span><span class="n">quarter_ls22</span><span class="p">))</span>
+<span class="n">solar_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">solar_data</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">solar_data</span><span class="p">)):</span>
+    <span class="n">solar_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">solar_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">))</span>
+    <span class="n">solar_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">solar_data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">solar_generation_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Month'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Jan 21'</span><span class="p">,</span><span class="s1">'Feb 21'</span><span class="p">,</span><span class="s1">'Mar 21'</span><span class="p">,</span><span class="s1">'Apr 21'</span><span class="p">,</span><span class="s1">'May 21'</span><span class="p">,</span><span class="s1">'Jun 21'</span><span class="p">,</span><span class="s1">'Jul 21'</span><span class="p">,</span><span class="s1">'Aug 21'</span><span class="p">,</span><span class="s1">'Sep 21'</span><span class="p">,</span><span class="s1">'Oct 21'</span><span class="p">,</span><span class="s1">'Nov 21'</span><span class="p">,</span><span class="s1">'Dec 21'</span><span class="p">,</span><span class="s1">'Jan 22'</span><span class="p">,</span><span class="s1">'Feb 22'</span><span class="p">,</span><span class="s1">'Mar 22'</span><span class="p">,</span><span class="s1">'Apr 22'</span><span class="p">,</span><span class="s1">'May 22'</span><span class="p">,</span><span class="s1">'Jun 22'</span><span class="p">,</span><span class="s1">'Jul 22'</span><span class="p">,</span><span class="s1">'Aug 22'</span><span class="p">,</span><span class="s1">'Sep 22'</span><span class="p">,</span><span class="s1">'Oct 22'</span><span class="p">,</span><span class="s1">'Nov 22'</span><span class="p">,</span><span class="s1">'Dec 22'</span><span class="p">],</span>
+    <span class="s1">'Generation'</span><span class="p">:</span> <span class="n">solar_data</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">chiller_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Month'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Jan 21'</span><span class="p">,</span><span class="s1">'Feb 21'</span><span class="p">,</span><span class="s1">'Mar 21'</span><span class="p">,</span><span class="s1">'Apr 21'</span><span class="p">,</span><span class="s1">'May 21'</span><span class="p">,</span><span class="s1">'Jun 21'</span><span class="p">,</span><span class="s1">'Jul 21'</span><span class="p">,</span><span class="s1">'Aug 21'</span><span class="p">,</span><span class="s1">'Sep 21'</span><span class="p">,</span><span class="s1">'Oct 21'</span><span class="p">,</span><span class="s1">'Nov 21'</span><span class="p">,</span><span class="s1">'Dec 21'</span><span class="p">,</span><span class="s1">'Jan 22'</span><span class="p">,</span><span class="s1">'Feb 22'</span><span class="p">,</span><span class="s1">'Mar 22'</span><span class="p">,</span><span class="s1">'Apr 22'</span><span class="p">,</span><span class="s1">'May 22'</span><span class="p">,</span><span class="s1">'Jun 22'</span><span class="p">,</span><span class="s1">'Jul 22'</span><span class="p">,</span><span class="s1">'Aug 22'</span><span class="p">,</span><span class="s1">'Sep 22'</span><span class="p">,</span><span class="s1">'Oct 22'</span><span class="p">,</span><span class="s1">'Nov 22'</span><span class="p">,</span><span class="s1">'Dec 22'</span><span class="p">],</span>
+    <span class="s1">'Consumption'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s1">'Chiller Plant'</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span><span class="s1">''</span><span class="p">)))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">quarter_ls</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s1">'Chiller Plant'</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">quarter_ls22</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="p">}</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [8]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">combined_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Month'</span><span class="p">:</span> <span class="n">chiller_data</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">],</span>
+    <span class="s1">'Solar'</span><span class="p">:</span> <span class="n">solar_data</span><span class="p">,</span>
+    <span class="s1">'Chiller'</span><span class="p">:</span> <span class="n">chiller_data</span><span class="p">[</span><span class="s1">'Consumption'</span><span class="p">]</span>
+<span class="p">}</span> 
+<span class="n">dddf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">combined_data</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">dddf</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">'Solar'</span><span class="p">,</span><span class="s1">'Chiller'</span><span class="p">],</span>
+             <span class="n">title</span><span class="o">=</span><span class="s2">"Solar Generation vs Chiller Demand"</span><span class="p">,</span>
+             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">'value'</span><span class="p">:</span><span class="s1">'kWh'</span><span class="p">,</span><span class="s1">'variable'</span><span class="p">:</span><span class="s1">'Source'</span><span class="p">})</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">yaxis2</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">'Chiller (kWh)'</span><span class="p">,</span> <span class="n">overlaying</span><span class="o">=</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">'right'</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <h3 id="Sub-Hypotheses">
+     Sub-Hypotheses
+     <a class="anchor-link" href="#Sub-Hypotheses">
+      ¶
+     </a>
+    </h3>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+    </p>
+    <h4>
+     1. October Experiences Maximum Transmission Loss
+    </h4>
+    <p>
+     Transmission loss increases tremendously in October as the campus grid
+  is heavily loaded by different activities. Though the chiller power
+  consumption slightly drops due to favorable weather, this savings is
+  overpowered by the increased demand from academic and sports facilities.
+    </p>
+    <p>
+     Q3 2022 is an outlier as there is increased usage of sports facilities due to InterIIT preparation.
+    </p>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [21]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">temperatures</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">temp22</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">q1_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">q2_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+<span class="n">q3_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">])</span>
+<span class="n">q4_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
+<span class="n">q1_22_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">15</span><span class="p">])</span>
+<span class="n">q2_22_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">18</span><span class="p">:</span><span class="mi">21</span><span class="p">])</span>
+<span class="n">q3_22_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">18</span><span class="p">])</span>
+<span class="n">q4_22_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">temperatures</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">24</span><span class="p">])</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [22]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">loss_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Quarter'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Q1.21'</span><span class="p">,</span><span class="s1">'Q2.21'</span><span class="p">,</span><span class="s1">'Q3.21'</span><span class="p">,</span><span class="s1">'Q4.21'</span><span class="p">,</span><span class="s1">'Q1.22'</span><span class="p">,</span><span class="s1">'Q2.22'</span><span class="p">,</span><span class="s1">'Q3.22'</span><span class="p">,</span><span class="s1">'Q4.22'</span><span class="p">],</span>
+    <span class="s1">'Loss%'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="s1">'Total.1'</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'%'</span><span class="p">,</span><span class="s1">''</span><span class="p">)),</span><span class="n">quarter_ls</span><span class="p">))</span> <span class="o">+</span> <span class="n">loss22</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">.</span><span class="n">to_list</span><span class="p">(),</span>
+    <span class="s1">'Temperature'</span><span class="p">:</span> <span class="p">[</span><span class="n">q1_t</span><span class="p">,</span><span class="n">q2_t</span><span class="p">,</span><span class="n">q3_t</span><span class="p">,</span><span class="n">q4_t</span><span class="p">,</span><span class="n">q1_22_t</span><span class="p">,</span><span class="n">q2_22_t</span><span class="p">,</span><span class="n">q3_22_t</span><span class="p">,</span><span class="n">q4_22_t</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">loss_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'Quarter'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'Loss%'</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">"Transmission Losses by Quarter"</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">'Temperature'</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">'%</span><span class="si">{y}</span><span class="s1">%'</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">'outside'</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+    </p>
+    <h4>
+     2. Increased Academic Block Power Usage in October
+    </h4>
+    <p>
+    </p>
+    <p>
+     During October, the academic calendar peaks with exams and related
+  activities, pushing the energy consumption in academic buildings to
+  higher levels. Key contributing factors include:
+    </p>
+    <ul>
+     <li>
+      Extended operating hours for classrooms, libraries, and laboratories.
+     </li>
+     <li>
+      Enhanced use of air-conditioning, lighting, and electronic devices during
+    exam times.
+     </li>
+     <li>
+      Additional support for multimedia setups, projectors, and computers.
+     </li>
+    </ul>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [24]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_convertible</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Q1.21'</span><span class="p">,</span><span class="s1">'Q2.21'</span><span class="p">,</span><span class="s1">'Q3.21'</span><span class="p">,</span><span class="s1">'Q4.21'</span><span class="p">,</span><span class="s1">'Q1.22'</span><span class="p">,</span><span class="s1">'Q2.22'</span><span class="p">,</span><span class="s1">'Q3.22'</span><span class="p">,</span><span class="s1">'Q4.22'</span><span class="p">]</span>
+<span class="n">academic</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">make_convertible</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">'Academic Area'</span><span class="p">]))</span> <span class="p">,</span> <span class="n">quarter_ls</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">'Academic Area'</span><span class="p">]</span> <span class="p">,</span> <span class="n">quarter_ls22</span><span class="p">))</span>
+<span class="n">hostel</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">make_convertible</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">'Hostels &amp; Guest house'</span><span class="p">]))</span> <span class="p">,</span> <span class="n">quarter_ls</span><span class="p">))</span><span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">'Hostels &amp; Guest house'</span><span class="p">]</span> <span class="p">,</span> <span class="n">quarter_ls22</span><span class="p">))</span>
+<span class="n">sports</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">make_convertible</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">'Sports Complex'</span><span class="p">]))</span> <span class="p">,</span> <span class="n">quarter_ls</span><span class="p">))</span><span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">'Sports Complex'</span><span class="p">]</span> <span class="p">,</span> <span class="n">quarter_ls22</span><span class="p">))</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Academic Area'</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">academic</span><span class="p">),</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Hostel and Guest House'</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">hostel</span><span class="p">),</span>
+    <span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Sports Complex'</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">sports</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">barmode</span><span class="o">=</span><span class="s1">'stack'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"Energy Use: Academic vs Hostel and Guest House vs Sports Complex"</span><span class="p">,</span><span class="n">yaxis_title</span><span class="o">=</span><span class="s1">'Energy Consumption (kWh)'</span><span class="p">,</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">'Quarter'</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+    </p>
+    <h4>
+     3. Increased Power Usage in the Sports Complex During Q4
+    </h4>
+    <p>
+    </p>
+    <p>
+     In preparation for the Inter-IIT Sports Meet, the sports complex faces a
+  spike in energy consumption driven by:
+    </p>
+    <ul>
+     <li>
+      High usage of floodlights during evening practice sessions.
+     </li>
+     <li>
+      Extended operation of gym and training facilities.
+     </li>
+     <li>
+      Increased demand for water heating in locker rooms and related amenities.
+     </li>
+    </ul>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [25]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">academic</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">'Academic Area'</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">'blue'</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">hostel</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">'Hostels &amp; Guest House'</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">'red'</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span>
+    
+<span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">sports</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">'Sports Complex'</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">'green'</span><span class="p">),</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span>
+    
+<span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Comparison of Energy Consumption: Academic vs Hostels"</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">"Quarter"</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">"Energy Consumption (kWh)"</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s2">"Area"</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">"plotly_white"</span><span class="p">,</span>
+    
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+    </p>
+    <h4>
+     4. Reduced Chiller Power Consumption in October-November
+    </h4>
+    <p>
+    </p>
+    <p>
+     The chiller systems show a decline in energy consumption in October-November
+  because of:
+    </p>
+    <ul>
+     <li>
+      Moderate average temperatures (approximately 27.9°C).
+     </li>
+     <li>
+      Lower humidity levels (around 52%) compared to the monsoon peaks.
+     </li>
+     <li>
+      Fewer rainy days, which reduce the latent heat load typically managed by
+    chillers.
+     </li>
+    </ul>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [26]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">chiller_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'Consumption'</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="s2">"Chiller Plant Energy Consumption (2021)"</span><span class="p">,</span>
+             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">'Consumption'</span><span class="p">:</span><span class="s1">'kWh'</span><span class="p">})</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">chiller_data</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">chiller_data</span><span class="p">[</span><span class="s1">'Consumption'</span><span class="p">],</span> 
+               <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'Actual'</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+     Despite this reduction, the combined rise in power demand from academic
+  and sports activities leads to an overall increase in campus energy need,
+  resulting in the highest supply requirements from Torrent Power during
+  October.
+    </p>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [27]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">df_long</span> <span class="o">=</span> <span class="n">consumption_full</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s2">"Month"</span><span class="p">,</span> 
+                                <span class="n">var_name</span><span class="o">=</span><span class="s2">"Category"</span><span class="p">,</span> 
+                                <span class="n">value_name</span><span class="o">=</span><span class="s2">"Consumption"</span><span class="p">)</span>
+<span class="n">month_order</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Jan"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"Feb"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"Mar"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Apr"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> 
+               <span class="s2">"May"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"Jun"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"Jul"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">"Aug"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> 
+               <span class="s2">"Sep"</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">"Oct"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">"Nov"</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">"Dec"</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+<span class="n">df_long</span><span class="p">[</span><span class="s2">"Month_Num"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">"Month"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">month_order</span><span class="p">)</span>
+<span class="n">df_long</span> <span class="o">=</span> <span class="n">df_long</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"Month_Num"</span><span class="p">)</span>
+<span class="n">df_long</span><span class="p">[</span><span class="s2">"Cumulative_Consumption"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_long</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"Category"</span><span class="p">)[</span><span class="s2">"Consumption"</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+<span class="n">df_long</span> <span class="o">=</span> <span class="n">df_long</span><span class="p">[</span><span class="n">df_long</span><span class="p">[</span><span class="s1">'Category'</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'Total'</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+    <span class="n">df_long</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">"Cumulative_Consumption"</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">"Category"</span><span class="p">,</span>
+    <span class="n">animation_frame</span><span class="o">=</span><span class="s2">"Month"</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="o">=</span><span class="s2">"h"</span><span class="p">,</span>
+    <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">df_long</span><span class="p">[</span><span class="s2">"Cumulative_Consumption"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">],</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Cumulative Power Consumption"</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"Cumulative_Consumption"</span><span class="p">:</span> <span class="s2">"Cumulative Consumption (Units)"</span><span class="p">,</span> <span class="s2">"Category"</span><span class="p">:</span> <span class="s2">"Category"</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s1">'categoryorder'</span><span class="p">:</span> <span class="s1">'total ascending'</span><span class="p">})</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <h4>
+     4. Why especially in February-March for both years, increasing solar power generation capabilities minimized external power dependency even more effectively?
+    </h4>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [28]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">solar_generation_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'Generation'</span><span class="p">,</span>
+             <span class="n">title</span><span class="o">=</span><span class="s2">"Solar Power Generation (2021)"</span><span class="p">,</span>
+             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">'Generation'</span><span class="p">:</span><span class="s1">'kWh'</span><span class="p">})</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">add_scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">solar_generation_data</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">solar_generation_data</span><span class="p">[</span><span class="s1">'Generation'</span><span class="p">],</span> 
+               <span class="n">mode</span><span class="o">=</span><span class="s1">'lines+markers'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'Actual'</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+    <p>
+     The following table presents the monthly environmental metrics for IIT
+  Gandhinagar, highlighting why February-March stands out:
+    </p>
+    <table>
+     <caption>
+      Monthly Environmental Metrics at IIT Gandhinagar for 2021
+     </caption>
+     <thead>
+      <tr>
+       <th>
+        Metric
+       </th>
+       <th>
+        January
+       </th>
+       <th>
+        February
+       </th>
+       <th>
+        March
+       </th>
+       <th>
+        April
+       </th>
+       <th>
+        May
+       </th>
+       <th>
+        June
+       </th>
+       <th>
+        July
+       </th>
+       <th>
+        August
+       </th>
+       <th>
+        September
+       </th>
+       <th>
+        October
+       </th>
+       <th>
+        November
+       </th>
+       <th>
+        December
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        Avg Temp (°C)
+       </td>
+       <td>
+        20.4
+       </td>
+       <td>
+        22.8
+       </td>
+       <td>
+        27.2
+       </td>
+       <td>
+        31.2
+       </td>
+       <td>
+        33.0
+       </td>
+       <td>
+        31.9
+       </td>
+       <td>
+        28.5
+       </td>
+       <td>
+        27.5
+       </td>
+       <td>
+        28.0
+       </td>
+       <td>
+        27.9
+       </td>
+       <td>
+        25.0
+       </td>
+       <td>
+        21.5
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Precipitation (mm)
+       </td>
+       <td>
+        1.0
+       </td>
+       <td>
+        1.0
+       </td>
+       <td>
+        1.0
+       </td>
+       <td>
+        1.0
+       </td>
+       <td>
+        1.0
+       </td>
+       <td>
+        73.0
+       </td>
+       <td>
+        307.0
+       </td>
+       <td>
+        242.0
+       </td>
+       <td>
+        109.0
+       </td>
+       <td>
+        17.0
+       </td>
+       <td>
+        3.0
+       </td>
+       <td>
+        1.0
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Humidity (%)
+       </td>
+       <td>
+        43.0
+       </td>
+       <td>
+        39.0
+       </td>
+       <td>
+        31.0
+       </td>
+       <td>
+        31.0
+       </td>
+       <td>
+        42.0
+       </td>
+       <td>
+        58.0
+       </td>
+       <td>
+        76.0
+       </td>
+       <td>
+        80.0
+       </td>
+       <td>
+        74.0
+       </td>
+       <td>
+        52.0
+       </td>
+       <td>
+        44.0
+       </td>
+       <td>
+        46.0
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Rainy days
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        5
+       </td>
+       <td>
+        14
+       </td>
+       <td>
+        15
+       </td>
+       <td>
+        7
+       </td>
+       <td>
+        2
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        0
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Avg Sun Hours
+       </td>
+       <td>
+        9.7
+       </td>
+       <td>
+        10.2
+       </td>
+       <td>
+        10.8
+       </td>
+       <td>
+        11.4
+       </td>
+       <td>
+        11.3
+       </td>
+       <td>
+        9.5
+       </td>
+       <td>
+        7.1
+       </td>
+       <td>
+        6.2
+       </td>
+       <td>
+        8.0
+       </td>
+       <td>
+        10.1
+       </td>
+       <td>
+        9.9
+       </td>
+       <td>
+        9.6
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <br/>
+    <table>
+     <caption>
+      Monthly Environmental Metrics at IIT Gandhinagar for 2022
+     </caption>
+     <thead>
+      <tr>
+       <th>
+        Metric
+       </th>
+       <th>
+        January
+       </th>
+       <th>
+        February
+       </th>
+       <th>
+        March
+       </th>
+       <th>
+        April
+       </th>
+       <th>
+        May
+       </th>
+       <th>
+        June
+       </th>
+       <th>
+        July
+       </th>
+       <th>
+        August
+       </th>
+       <th>
+        September
+       </th>
+       <th>
+        October
+       </th>
+       <th>
+        November
+       </th>
+       <th>
+        December
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        Avg Temp (°C)
+       </td>
+       <td>
+        19.7
+       </td>
+       <td>
+        23.3
+       </td>
+       <td>
+        27.3
+       </td>
+       <td>
+        31.8
+       </td>
+       <td>
+        34.0
+       </td>
+       <td>
+        33.2
+       </td>
+       <td>
+        28.4
+       </td>
+       <td>
+        28.4
+       </td>
+       <td>
+        29.1
+       </td>
+       <td>
+        29.4
+       </td>
+       <td>
+        24.7
+       </td>
+       <td>
+        22.4
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Precipitation (mm)
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        2
+       </td>
+       <td>
+        7
+       </td>
+       <td>
+        80
+       </td>
+       <td>
+        290
+       </td>
+       <td>
+        265
+       </td>
+       <td>
+        85
+       </td>
+       <td>
+        12
+       </td>
+       <td>
+        2
+       </td>
+       <td>
+        1
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Humidity (%)
+       </td>
+       <td>
+        50
+       </td>
+       <td>
+        42
+       </td>
+       <td>
+        33
+       </td>
+       <td>
+        34
+       </td>
+       <td>
+        42
+       </td>
+       <td>
+        59
+       </td>
+       <td>
+        77
+       </td>
+       <td>
+        80
+       </td>
+       <td>
+        74
+       </td>
+       <td>
+        56
+       </td>
+       <td>
+        50
+       </td>
+       <td>
+        50
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Rainy Days
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        4
+       </td>
+       <td>
+        12
+       </td>
+       <td>
+        11
+       </td>
+       <td>
+        5
+       </td>
+       <td>
+        1
+       </td>
+       <td>
+        0
+       </td>
+       <td>
+        0
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Avg Sun Hours
+       </td>
+       <td>
+        9.5
+       </td>
+       <td>
+        10.0
+       </td>
+       <td>
+        9.0
+       </td>
+       <td>
+        10.0
+       </td>
+       <td>
+        10.5
+       </td>
+       <td>
+        8.0
+       </td>
+       <td>
+        4.0
+       </td>
+       <td>
+        3.5
+       </td>
+       <td>
+        7.5
+       </td>
+       <td>
+        9.5
+       </td>
+       <td>
+        9.0
+       </td>
+       <td>
+        9.5
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <p>
+    </p>
+    <h5>
+     Optimal Conditions for Solar Efficiency in Q1
+    </h5>
+    <p>
+    </p>
+    <p>
+     Q1 is particularly ideal for solar power production because:
+    </p>
+    <ul>
+     <li>
+      The average temperature of about 25.4°C is moderate enough to minimize thermal
+    losses, which can hamper solar panel efficiency in excessively hot months.
+     </li>
+     <li>
+      With an average of 10 sun hours per day in February - March, there is ample
+    sunlight to drive significant solar power generation.
+     </li>
+     <li>
+      Low precipitation and minimal rainy days reduce cloud cover, ensuring more
+    consistent solar exposure.
+     </li>
+    </ul>
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [29]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span><span class="n">plot_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">'Month'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Jan 21'</span><span class="p">,</span><span class="s1">'Feb 21'</span><span class="p">,</span><span class="s1">'Mar 21'</span><span class="p">,</span><span class="s1">'Apr 21'</span><span class="p">,</span><span class="s1">'May 21'</span><span class="p">,</span><span class="s1">'Jun 21'</span><span class="p">,</span><span class="s1">'Jul 21'</span><span class="p">,</span><span class="s1">'Aug 21'</span><span class="p">,</span><span class="s1">'Sep 21'</span><span class="p">,</span><span class="s1">'Oct 21'</span><span class="p">,</span><span class="s1">'Nov 21'</span><span class="p">,</span><span class="s1">'Dec 21'</span><span class="p">,</span>
+              <span class="s1">'Jan 22'</span><span class="p">,</span><span class="s1">'Feb 22'</span><span class="p">,</span><span class="s1">'Mar 22'</span><span class="p">,</span><span class="s1">'Apr 22'</span><span class="p">,</span><span class="s1">'May 22'</span><span class="p">,</span><span class="s1">'Jun 22'</span><span class="p">,</span><span class="s1">'Jul 22'</span><span class="p">,</span><span class="s1">'Aug 22'</span><span class="p">,</span><span class="s1">'Sep 22'</span><span class="p">,</span><span class="s1">'Oct 22'</span><span class="p">,</span><span class="s1">'Nov 22'</span><span class="p">,</span><span class="s1">'Dec 22'</span><span class="p">],</span>
+    <span class="s1">'Sunny Days'</span><span class="p">:</span> <span class="n">sunny_day_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">sunny_day_data22</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="s1">'Avg Temp (°C)'</span><span class="p">:</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">temp22</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="s1">'Solar Generation (kWh)'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">solar_data</span><span class="p">))</span>
+<span class="p">})</span>
+
+<span class="c1"># Extract month name for matching</span>
+<span class="n">plot_data</span><span class="p">[</span><span class="s1">'MonthOnly'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">plot_data</span><span class="p">[</span><span class="s1">'Month'</span><span class="p">]]</span>
+
+<span class="c1"># Scatter plot</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">plot_data</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">'Avg Temp (°C)'</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">'Sunny Days'</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="s1">'Solar Generation (kWh)'</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">'Solar Generation (kWh)'</span><span class="p">,</span>
+    <span class="n">hover_name</span><span class="o">=</span><span class="s1">'Month'</span><span class="p">,</span>
+    <span class="n">size_max</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">'YlOrRd'</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'Solar Generation vs Sunny Days vs Temperature'</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">'Sunny Days'</span><span class="p">:</span> <span class="s1">'Sunny Days (per month)'</span><span class="p">,</span>
+        <span class="s1">'Avg Temp (°C)'</span><span class="p">:</span> <span class="s1">'Average Temperature (°C)'</span><span class="p">,</span>
+        <span class="s1">'Solar Generation (kWh)'</span><span class="p">:</span> <span class="s1">'Solar Generation (kWh)'</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Add lines between same months</span>
+<span class="k">for</span> <span class="n">month</span> <span class="ow">in</span> <span class="n">plot_data</span><span class="p">[</span><span class="s1">'MonthOnly'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+    <span class="n">same_months</span> <span class="o">=</span> <span class="n">plot_data</span><span class="p">[</span><span class="n">plot_data</span><span class="p">[</span><span class="s1">'MonthOnly'</span><span class="p">]</span> <span class="o">==</span> <span class="n">month</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_months</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">same_months</span><span class="p">[</span><span class="s1">'Avg Temp (°C)'</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">same_months</span><span class="p">[</span><span class="s1">'Sunny Days'</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'lines'</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s1">'dot'</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">'skip'</span>
+        <span class="p">))</span>
+
+<span class="c1"># Final layout tweaks</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s1">'plotly_white'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="jp-Cell-outputWrapper">
+    <div class="jp-OutputArea jp-Cell-outputArea">
+     <div class="jp-OutputArea-child">
+      <div class="jp-OutputPrompt jp-OutputArea-prompt">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="jp-Cell-inputWrapper">
+   <div class="jp-InputPrompt jp-InputArea-prompt">
+   </div>
+   <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+   </div>
+  </div>
+  <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+   <div class="jp-Cell-inputWrapper">
+    <div class="jp-InputArea jp-Cell-inputArea">
+     <div class="jp-InputPrompt jp-InputArea-prompt">
+      In [ ]:
+     </div>
+     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+      <div class="CodeMirror cm-s-jupyter">
+       <div class="highlight hl-ipython3">
+        <pre><span></span> 
 </pre>
        </div>
       </div>
