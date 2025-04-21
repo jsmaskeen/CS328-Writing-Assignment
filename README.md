@@ -1,5 +1,6 @@
 # Writing Assignment
-## CS328-2022
-[![Deploy](https://github.com/cs328-2022/writing-assignment/actions/workflows/deploy.yml/badge.svg)](https://github.com/cs328-2022/writing-assignment/actions/workflows/deploy.yml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/b4e74a4e-ee30-4e50-b1af-f7864b096f04/deploy-status)](https://app.netlify.com/sites/writing-assignment-cs328/deploys)
-<!-- Replace this link with your generated Netlify website link -->
+## CS328-2025
+[![Deploy](https://github.com/jsmaskeen/CS328-Writing-Assignment/actions/workflows/deploy.yml/badge.svg)](https://github.com/jsmaskeen/CS328-Writing-Assignment/actions/workflows/deploy.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c312a84c-2f64-4df6-a75f-a7eeafbbbaa3/deploy-status)](https://app.netlify.com/sites/heknowssomething/deploys)
+
+Link: [https://heknowssomething.netlify.app/](https://heknowssomething.netlify.app/)
